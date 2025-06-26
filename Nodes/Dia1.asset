@@ -1,0 +1,171 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4083450379023672158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bcdb0dd939cf2547996e2c5f0db539f, type: 3}
+  m_Name: Pedido
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -563.8981, y: -21.80199}
+  ports:
+    keys: []
+    values: []
+  eventName: Pedido1
+  eventHour: 15
+  eventMinute: 0
+  pedidoName: VHSItem_Gato
+--- !u!114 &-2360215827964344053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc4b2907f55a356449a9334b9d01d9b7, type: 3}
+  m_Name: Phone Call Event
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -88, y: -136}
+  ports:
+    keys: []
+    values: []
+  eventName: LlamadaAmigo_D1
+  eventHour: 13
+  eventMinute: 30
+  nombreUsuarioLlamada: Amigo
+  idDialogo: amigo_d1_1
+  blockColgar: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bbe3dd2a7518af4099cb99579d0234d, type: 3}
+  m_Name: Dia1
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 7819977748588364890}
+  - {fileID: -2360215827964344053}
+  - {fileID: 4824194500338087556}
+  - {fileID: 4051801532285629002}
+  - {fileID: 6319229916658623634}
+  - {fileID: 125666013689313406}
+  - {fileID: -4083450379023672158}
+--- !u!114 &125666013689313406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b9388d3be6f91649b68829b62884576, type: 3}
+  m_Name: Letter Event
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -72, y: 104}
+  ports:
+    keys: []
+    values: []
+  eventName: Evento_Carta_1
+  eventHour: 14
+  eventMinute: 0
+  cartaAEntregarName: CartaItem_0
+--- !u!114 &4051801532285629002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e8f56902101fd34382054d2e2a0d944, type: 3}
+  m_Name: NPC Event
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 200, y: -120}
+  ports:
+    keys: []
+    values: []
+  eventName: EventoNPC_1
+  eventHour: 15
+  eventMinute: 0
+  npcEnviar: {fileID: 4495730153656467664, guid: 319a83bb9180d464aa0e8077c31908e0, type: 3}
+--- !u!114 &4824194500338087556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76a03daa12d29ce459bd7bd74d222f4c, type: 3}
+  m_Name: News Event
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -360, y: 104}
+  ports:
+    keys: []
+    values: []
+  eventName: Evento_Noticia_1
+  eventHour: 15
+  eventMinute: 0
+  noticiaParaEnviarName: Noticia2
+--- !u!114 &6319229916658623634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b04e4d2ea281a5e458f7284319fe0c8e, type: 3}
+  m_Name: Stain Event
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 200, y: 104}
+  ports:
+    keys: []
+    values: []
+  eventName: Mancha_1
+  eventHour: 15
+  eventMinute: 0
+  manchaParaEnviarName: Mancha
+--- !u!114 &7819977748588364890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172b6cfaae968224f924996a3ccf777b, type: 3}
+  m_Name: Email Event
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -360, y: -120}
+  ports:
+    keys: []
+    values: []
+  eventName: CorreoJefe_d1_1
+  eventHour: 12
+  eventMinute: 32
+  correoParaEnviarName: CorreoJefe_D1
