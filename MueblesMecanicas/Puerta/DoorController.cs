@@ -170,7 +170,7 @@ public class DoorController : MonoBehaviour
             }
             else if (generaPensamiento && !blockPensamiento)
             {
-                pensamientoControler.MostrarPensamiento(pensamiento, 1);
+                pensamientoControler.MostrarPensamiento(pensamiento, 2.5f);
                 blockPensamiento = true;
                 Invoke(nameof(UnblockPensamiento), 3);
             }

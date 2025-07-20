@@ -28,6 +28,8 @@ public class SceneDialogsController : MonoBehaviour
     public GameObject accion2;
 
     public bool estabaFreezed;
+
+    public GameObject iconosTutorial;
     
     void Start()
     {
@@ -102,6 +104,7 @@ public class SceneDialogsController : MonoBehaviour
         dialogeController.EmpezarDialogos();
         puntero.SetActive(false);
         raycast.blockRaycast = true;
+        iconosTutorial.SetActive(false);
     }
 
     void SetAcciones()
@@ -138,6 +141,8 @@ public class SceneDialogsController : MonoBehaviour
             tienePensamientoActual = false;
             pensamientoControler.MostrarPensamiento(pensamientoActual, 2);
         }
+
+        iconosTutorial.SetActive(true);
 
 
     }

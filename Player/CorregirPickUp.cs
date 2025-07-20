@@ -9,27 +9,39 @@ public class CorregirPickUp : MonoBehaviour
 
     public Transform pickUpDelante;
     public Transform pickUpAtras;
+    public Transform pickUpGuardado;
 
     public LayerMask capasDetectables;
 
     public GameObject parent;
+
+    Raycast raycast;
+
     void Start()
     {
-        
+        raycast = GameObject.Find("Main Camera").GetComponent<Raycast>();
     }
 
     public float tiempoSacandoObjeto;
 
     void Update()
     {
-        if(algoDentro) 
+        if (!raycast.itemGuardado)
         {
-            parent.transform.position = Vector3.MoveTowards(parent.transform.position, pickUpAtras.position, 2 * Time.deltaTime);
+            if (algoDentro)
+            {
+                parent.transform.position = Vector3.MoveTowards(parent.transform.position, pickUpAtras.position, 2 * Time.deltaTime);
+            }
+            else
+            {
+                parent.transform.position = Vector3.MoveTowards(parent.transform.position, pickUpDelante.position, 2 * Time.deltaTime);
+            }
         }
         else
         {
-            parent.transform.position = Vector3.MoveTowards(parent.transform.position, pickUpDelante.position, 2 * Time.deltaTime);
+            parent.transform.position = Vector3.MoveTowards(parent.transform.position, pickUpGuardado.position, 3 * Time.deltaTime);
         }
+        
 
     }
 

@@ -15,21 +15,29 @@ public class LaberintoController : MonoBehaviour
 
     public GameObject laberintoPrefab;
 
+    public GameObject edificios;
+
     public string[] caminoCorrecto;
-    public bool caminoErroneo;
     public int indiceCamino;
+
+    PlayerStats playerStats;
+
+    public bool caminoErroneo;
 
     void Start()
     {
         posicionLaberintoInicial = transformLaberintoInicial.position;
         rotacionLaberintoInicial = transformLaberintoInicial.rotation;
         scalaLaberintoInicial = transformLaberintoInicial.localScale;
+
+        playerStats = GameObject.Find("GameManager").GetComponent<PlayerStats>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     public void EntrarLaberinto()
@@ -39,21 +47,30 @@ public class LaberintoController : MonoBehaviour
 
         dentroLaberinto = true;
 
+        caminoErroneo = false;
+
         GameObject laberintoInstanciado = Instantiate(laberintoPrefab, posicionLaberintoInicial, rotacionLaberintoInicial);
         laberintoInstanciado.transform.SetParent(transform);
         laberintoInstanciado.transform.position = posicionLaberintoInicial;
         laberintoInstanciado.transform.rotation = rotacionLaberintoInicial;
         laberintoInstanciado.transform.localScale = scalaLaberintoInicial;
 
+        edificios.SetActive(false);
+
+        playerStats.actualizaStats = false;
 
     }
 
     public void SalirLaberinto()
     {
         dentroLaberinto = false;
-
+        caminoErroneo = false;
 
         DestruirLaberinto();
+
+        edificios.SetActive(true);
+
+        playerStats.actualizaStats = true;
 
     }
 
@@ -80,7 +97,7 @@ public class LaberintoController : MonoBehaviour
 
         for (int i = 0; todosLosGuardianes.Length > i; i++)
         {
-            todosLosGuardianes[i].GetComponent<GuardianLaberinto>().enfadado = true;
+            GuardianLaberinto guardianLaberinto = todosLosGuardianes[i].GetComponent<GuardianLaberinto>();
         }
     }
 

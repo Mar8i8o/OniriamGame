@@ -17,6 +17,7 @@ public class IndicadorAtrapasuenos : MonoBehaviour
     //public GameObject atrapasuenosObj;
 
     PensamientoControler pensamientoControler;
+    DreamController dreamController;
 
     Raycast raycast;
     GuardarController guardarController;
@@ -26,18 +27,30 @@ public class IndicadorAtrapasuenos : MonoBehaviour
 
     public bool puedeColocar;
 
+    public GameObject engancheVida;
+    public GameObject engancheResistencia;
+
     private void Awake()
     {
         //render.material.SetTexture("_BaseMap", texture);
 
         pensamientoControler = GameObject.Find("PensamientoController").GetComponent<PensamientoControler>(); 
         guardarController = GameObject.Find("GameManager").GetComponent<GuardarController>(); 
+        dreamController = GameObject.Find("GameManager").GetComponent<DreamController>();
 
         raycast = GameObject.Find("Main Camera").GetComponent<Raycast>();
         //indicadorAtrapaSuenos.SetActive(false);
 
         atrapasuenosVida = PlayerPrefs.GetInt("atrapasuenosVida", atrapasuenosVida);
         atrapasuenosResistencia = PlayerPrefs.GetInt("atrapasuenosResistencia", atrapasuenosResistencia);
+
+        if (dreamController.inDream)
+        {
+
+            if(engancheVida != null)engancheVida.SetActive(atrapasuenosVida >= 1);
+            if(engancheResistencia != null)engancheResistencia.SetActive(atrapasuenosResistencia >= 1);
+
+        }
 
     }
     void Update()

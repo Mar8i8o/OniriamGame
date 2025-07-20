@@ -22,6 +22,10 @@ public class EscalerasController : MonoBehaviour
     public GameObject luzTerrado;
     public GameObject vacio;
 
+    public AudioSource sonidoPasos;
+
+    bool escondido;
+
     void Start()
     {
         player = GameObject.Find("Player");
@@ -40,7 +44,10 @@ public class EscalerasController : MonoBehaviour
             {
                 if (indicePosiciones +1 < posicionesEnemy.Length) { indicePosiciones++; }
                 enemyEscaleras.gameObject.transform.position = posicionesEnemy[indicePosiciones].position + new Vector3(0,0.5f,0);
+                print("MoverEnemigoEscaleras");
                 enemyAnim.SetBool("MirandoAbajo", true);
+                sonidoPasos.Play();
+                escondido = false;
             }
 
             if (distancia > 9 ) 
@@ -55,6 +62,12 @@ public class EscalerasController : MonoBehaviour
                     {
                         enemyEscaleras.gameObject.transform.Translate(-enemyEscaleras.gameObject.transform.forward * 2 * Time.deltaTime, Space.World);
                         enemyAnim.SetBool("MirandoAbajo", false);
+
+                        if(!escondido)
+                        {
+                            escondido = true;
+                            sonidoPasos.Stop();
+                        }
                     }
                 }
 

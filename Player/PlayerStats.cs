@@ -265,9 +265,12 @@ public class PlayerStats : MonoBehaviour
     }
 
     ControlarCaerse2 controlarCaerse;
-
+    [HideInInspector]public bool noqueandose;
     public void NoquearPlayer()
     {
+        if (noqueandose) return;
+
+        noqueandose = true;
         rotacionInicial = player.transform.eulerAngles;
 
         camaraFP.GuardarController();

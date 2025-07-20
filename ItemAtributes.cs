@@ -25,6 +25,7 @@ public class ItemAtributes : MonoBehaviour
     public float radiusCorreccion;
 
     public bool siempreHor;
+    public string pensamientoAlCojer;
 
     [Header("COMIDA")]
 
@@ -152,7 +153,7 @@ public class ItemAtributes : MonoBehaviour
     GameObject camara;
     CamaraFP camaraFP;
     GameObject player;
-    Raycast scriptPlayer;
+    Raycast raycast;
     SceneDialogsController sceneDialogsController;
     PensamientoControler pensamientoControler;
     GuardarController guardarController;
@@ -192,6 +193,7 @@ public class ItemAtributes : MonoBehaviour
 
     [HideInInspector]public IndicadorAtrapasuenos indicadorAtrapasuenos;
 
+
     #endregion
 
 
@@ -209,7 +211,7 @@ public class ItemAtributes : MonoBehaviour
         if(isAtrapasuenos)indicadorAtrapasuenos = camara.GetComponent<IndicadorAtrapasuenos>();
         player = GameObject.Find("Player");
         camaraFP = player.GetComponent<CamaraFP>();
-        scriptPlayer = camara.GetComponent<Raycast>();
+        raycast = camara.GetComponent<Raycast>();
         tiendaController = GameObject.Find("GameManager").GetComponent<TiendaController>();
         leerTextoController = GameObject.Find("LeerTextoController").GetComponent<LeerTextoController>();
 
@@ -417,8 +419,8 @@ public class ItemAtributes : MonoBehaviour
 
         if (notaOpening) 
         {
-            transform.position = Vector3.MoveTowards(transform.position, scriptPlayer.notaPosition.transform.position, 3 * Time.deltaTime);
-            transform.rotation = scriptPlayer.notaPosition.transform.rotation;
+            transform.position = Vector3.MoveTowards(transform.position, raycast.notaPosition.transform.position, 3 * Time.deltaTime);
+            transform.rotation = raycast.notaPosition.transform.rotation;
         };
 
         if (isPizza)
@@ -492,19 +494,19 @@ public class ItemAtributes : MonoBehaviour
         }
         */
 
-        if (sceneDialogsController.dialogueActive || scriptPlayer.seleccionando) { return; }
+        if (sceneDialogsController.dialogueActive || raycast.seleccionando) { return; }
 
         if (isCarta) ///////////////////////////////////////////////////CARTA
         {
             if (pickUp)
             {
-                if (scriptPlayer.tiempoConObjeto > 0.1f && Input.GetKeyDown(KeyCode.Mouse0) && !scriptPlayer.seleccionando) { AbrirCarta(); print("Abrir carta"); }
+                if (raycast.tiempoConObjeto > 0.1f && Input.GetKeyDown(KeyCode.Mouse0) && !raycast.seleccionando && !raycast.itemGuardado) { AbrirCarta(); print("Abrir carta"); }
             }
         }
 
-        if (isLinterna && !scriptPlayer.seleccionando) 
+        if (isLinterna && !raycast.seleccionando) 
         {
-            if (Input.GetKeyDown (KeyCode.Mouse0) && pickUp && scriptPlayer.tiempoConObjeto > 0.1f) 
+            if (Input.GetKeyDown (KeyCode.Mouse0) && pickUp && raycast.tiempoConObjeto > 0.1f && !raycast.itemGuardado) 
             {
                 if (linternaEncendida) 
                 {
@@ -560,6 +562,7 @@ public class ItemAtributes : MonoBehaviour
 
         }
 
+
     }
 
 
@@ -570,7 +573,7 @@ public class ItemAtributes : MonoBehaviour
         {
             mostrandoTexto = false;
             leerTextoController.DejarDeMostrarTexto();
-            scriptPlayer.puntero.enabled = true;
+            raycast.puntero.enabled = true;
 
         }
 
@@ -704,7 +707,7 @@ public class ItemAtributes : MonoBehaviour
 
     public void SoltarObjeto()
     {
-        scriptPlayer.ForzarSoltarObjeto();
+        raycast.ForzarSoltarObjeto();
     }
 
     #region Pastillas
@@ -718,6 +721,11 @@ public class ItemAtributes : MonoBehaviour
             indicePastillas++;
 
             ActualizarPastillas();
+
+            if(indicePastillas >= cantidadPastillas.Length)
+            {
+                raycast.icoTomarPastillas.SetActive(false);
+            }
             
         }
     }
@@ -812,6 +820,7 @@ public class ItemAtributes : MonoBehaviour
             {
                 print("cigarro acabado");
                 cigarroConsumido = true;
+                raycast.icoFumar.SetActive(false);
             }
         }
 
@@ -926,7 +935,9 @@ public class ItemAtributes : MonoBehaviour
             if (intentosCarta <= 0)
             {
                 cartaAbierta = true;
+                raycast.icoAbrir.SetActive(true);
                 cartaAnim.SetBool("Open", cartaAbierta);
+                
                 TransportarObjetoCarta();
                 //Invoke(nameof(TransportarObjetoCarta), 0.1f);
                 Invoke(nameof(SoltarObjeto), 0.3f);
@@ -961,7 +972,7 @@ public class ItemAtributes : MonoBehaviour
         CancelInvoke(nameof(CogerObjetoCarta));
 
         itemAtributesContenidoCarta.notaOpening = false;
-        scriptPlayer.CogerObjeto(contenidoCarta);
+        raycast.CogerObjeto(contenidoCarta);
     }
 
     public void CancelarNotaOpening()
@@ -976,10 +987,8 @@ public class ItemAtributes : MonoBehaviour
     string textoActual;
     public void ControlesLeerNota() //CONECTADO AL UPDATE
     {
-        if (pickUp && isNota && scriptPlayer.tiempoConObjeto > 0.1f && !notaOpening) 
+        if (pickUp && isNota && raycast.tiempoConObjeto > 0.1f && !notaOpening && !raycast.itemGuardado) 
         {
-
-
 
             // Rotación mundial del objeto
             Quaternion worldRotation = transform.rotation;
@@ -1008,18 +1017,23 @@ public class ItemAtributes : MonoBehaviour
                 textoActual = textoNotaDelante;
             }
 
+            if(!mostrandoTexto)
+            {
+                raycast.icoLeer.SetActive(textoActual != "");
+            }
+
             // Actualizar el texto mostrado
             leerTextoController.textoTXT.text = textoActual;
 
 
-            if (Input.GetKeyDown(KeyCode.Mouse0) && !scriptPlayer.seleccionando)  //PULSAR
+            if (Input.GetKeyDown(KeyCode.Mouse0) && !raycast.seleccionando)  //PULSAR
             {
                 tiempoManteniendoNota = 0;
                 mantenerLeerTexto = false;
                 
             }
 
-            if (Input.GetKey(KeyCode.Mouse0) && !scriptPlayer.seleccionando && !sceneDialogsController.dialogueActive) //MANTENER
+            if (Input.GetKey(KeyCode.Mouse0) && !raycast.seleccionando && !sceneDialogsController.dialogueActive) //MANTENER
             {
 
                 tiempoManteniendoNota += Time.deltaTime;
@@ -1038,8 +1052,8 @@ public class ItemAtributes : MonoBehaviour
                 notaFreezeCamera = true;
                 camaraFP.freezeCamera = true;
 
-                if (Input.GetAxis("Mouse X") > 0.1) { scriptPlayer.notaPosition.transform.Rotate(0, 6, 0);}
-                if (Input.GetAxis("Mouse X") < -0.1) { scriptPlayer.notaPosition.transform.Rotate(0, -6, 0);}
+                if (Input.GetAxis("Mouse X") > 0.1) { raycast.notaPosition.transform.Rotate(0, 6, 0);}
+                if (Input.GetAxis("Mouse X") < -0.1) { raycast.notaPosition.transform.Rotate(0, -6, 0);}
 
             }
             else if(notaFreezeCamera && !sceneDialogsController.dialogueActive)
@@ -1048,21 +1062,17 @@ public class ItemAtributes : MonoBehaviour
                 camaraFP.freezeCamera = false;
             }
 
-            if (Input.GetKeyUp(KeyCode.Mouse0) && !scriptPlayer.seleccionando && !sceneDialogsController.dialogueActive) //LEVANTAR
+            if (Input.GetKeyUp(KeyCode.Mouse0) && !raycast.seleccionando && !sceneDialogsController.dialogueActive) //KEY UP (PARA NO ENTRAR EN CONFLICTO CON EL MOUSE_0 DE ROTAR)
             {
                 if(!mantenerLeerTexto)
                 {
                     if (mostrandoTexto)
                     {
-                        mostrandoTexto = false;
-                        leerTextoController.DejarDeMostrarTexto();
-                        scriptPlayer.puntero.enabled = true;
+                        DejarDeMostrarTexto();
                     }
                     else //MOSTRAR TEXTO
                     {
-                        mostrandoTexto = true;
-                        leerTextoController.MostrarTexto(textoActual);
-                        scriptPlayer.puntero.enabled = false;
+                        MostrarTexto();
                     }
                 }
             }
@@ -1071,9 +1081,29 @@ public class ItemAtributes : MonoBehaviour
             {
                 mostrandoTexto = false;
                 leerTextoController.DejarDeMostrarTexto();
+                raycast.icoDejarDeLeer.SetActive(false);
+                raycast.icoLeer.SetActive(false);
             }
 
         }
+    }
+
+    public void MostrarTexto()
+    {
+        mostrandoTexto = true;
+        leerTextoController.MostrarTexto(textoActual);
+        raycast.puntero.enabled = false;
+        raycast.icoDejarDeLeer.SetActive(true);
+        raycast.icoLeer.SetActive(false);
+    }
+
+    public void DejarDeMostrarTexto()
+    {
+        mostrandoTexto = false;
+        leerTextoController.DejarDeMostrarTexto();
+        raycast.puntero.enabled = true;
+        raycast.icoDejarDeLeer.SetActive(false);
+        raycast.icoLeer.SetActive(true);
     }
 
     #endregion

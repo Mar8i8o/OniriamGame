@@ -6,7 +6,7 @@ public class Dia2_Controller : MonoBehaviour
      LlamadasController llamadasController;
     DreamController dreamController;
     public int indiceHistoria;
-
+    public int inicioSuperado; //1 SI HAS PASADO LA PARTE DE LA ESCALERA, 0 SI AUN NO
     public float contador;
 
     public DoorController puertaEscalera;
@@ -36,8 +36,6 @@ public class Dia2_Controller : MonoBehaviour
     public CameraShake cameraShake;
 
     public AudioSource sonidoPuerta;
-
-    public int inicioSuperado; //1 SI HAS PASADO LA PARTE DE LA ESCALERA, 0 SI AUN NO
 
     public GameObject laberinto;
 
@@ -120,7 +118,7 @@ public class Dia2_Controller : MonoBehaviour
         {
             if (llamadasController.esperandoLlamada && !panelLlamada.activeSelf)
             {
-                puertaEscalera.pensamiento = "Esta cerrada, deberia llamar al cerrajero";
+                puertaEscalera.pensamiento = "Está cerrada, deberia ir a buscar algo para abrir la puerta, tengo que ir a trabajar";
                 indiceHistoria++;
             }
         }

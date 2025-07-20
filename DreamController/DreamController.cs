@@ -85,6 +85,11 @@ public class DreamController : MonoBehaviour
         Invoke(nameof(CambiarEscenaWoke), 0.3f);
     }
 
+    public void LlamarDespertarseApartamento(float tiempo)
+    {
+        Invoke(nameof(ForzarDespertarseApartamento), tiempo);
+    }
+
     public void CambiarEscenaWoke()
     {
         //SceneManager.LoadScene("SampleScene");

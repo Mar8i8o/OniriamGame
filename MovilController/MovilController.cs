@@ -34,11 +34,14 @@ public class MovilController : MonoBehaviour
 
     public bool encendido;
 
+    [HideInInspector]public SacarMovilController sacarMovilController;
+
 
     private void Awake()
     {
         //AbrirMovil();
         ActivarPantallas();
+        sacarMovilController = GameObject.Find("Player").GetComponent<SacarMovilController>();
         guardarController = GameObject.Find("GameManager").GetComponent<GuardarController>();
         todosLosAudios = GameObject.FindGameObjectsWithTag("SonidoSlot");
         todosLosContactos = GameObject.FindGameObjectsWithTag("Contacto");
@@ -146,19 +149,8 @@ public class MovilController : MonoBehaviour
 
                     if ((menuInicio && !panelDialogsLlamada.activeSelf && !blockApagarMovil) || llamadasController.esperandoLlamada) //DEJA DE FOCUSEAR EL MOVIL, YA SEA DESDE EL INICIO O CUANDO TE LLAMAN
                     {
-                        print("Dejar de usar movil");
-                        cameraScript.usingMovil = false;
-                        cameraScript.tiempoConObjeto = 0;
-                        cameraScript.puntero.enabled = true;
-                        cameraScript.movimientoDespacio = true;
-                        if(!cameraScript.tumbado)playerScript.freeze = false;
-                        eventosMensajes.esperandoMensaje = false;
-                        if (!llamadasController.esperandoLlamada)
-                        {
-                            ApagarPantalla();
-                            encendido = false;
-                        }
 
+                        DejarDeUsarMovil();
 
                     }
 
@@ -171,6 +163,27 @@ public class MovilController : MonoBehaviour
                 }
 
         }
+    }
+
+    public void DejarDeUsarMovil()
+    {
+        print("Dejar de usar movil");
+        cameraScript.usingMovil = false;
+        cameraScript.tiempoConObjeto = 0;
+        cameraScript.puntero.enabled = true;
+        cameraScript.movimientoDespacio = true;
+        if (!cameraScript.tumbado) playerScript.freeze = false;
+        eventosMensajes.esperandoMensaje = false;
+        if (!llamadasController.esperandoLlamada)
+        {
+            ApagarPantalla();
+            encendido = false;
+        }
+
+        sacarMovilController.icoGuardarMovil.SetActive(true);
+        sacarMovilController.icoUsarMovil.SetActive(true);
+
+        sacarMovilController.icoDejarDeUsarMovil.SetActive(false);
     }
 
     [HideInInspector]public bool blockApagarMovil;

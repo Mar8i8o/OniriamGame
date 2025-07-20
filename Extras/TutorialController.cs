@@ -91,6 +91,7 @@ public class TutorialController : MonoBehaviour
                 indiceTutorial++;
                 tiempoIndice = 0;
                 contador = 0;
+                camaController.icoLevantarse.SetActive(false);
                 if(tiempoIndice > 5)
                 {
                     indiceTutorial++;
@@ -160,6 +161,11 @@ public class TutorialController : MonoBehaviour
                     pensamientoControler.DejarDeMostrarPensamiento();
                     LlamarPensamieto("Deberia ir al baño", 2, 2);
                 }
+                if(tiempoIndice > 2)
+                {
+                    camaController.icoLevantarse.SetActive(true);
+                }
+
             }
             else if(indiceTutorial == 4)
             {

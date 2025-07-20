@@ -27,6 +27,9 @@ public class ComputerController : MonoBehaviour
 
     PensamientoControler pensamientoControler;
 
+    public GameObject icoDejarDeUsar;
+    public GameObject icoLevantarse;
+
     private void Awake()
     {
         guardarController = GameObject.Find("GameManager").GetComponent<GuardarController>();
@@ -109,6 +112,9 @@ public class ComputerController : MonoBehaviour
         tiempoPcEncendido = 0;
         inputLogin.text = "";
 
+        icoLevantarse.SetActive(false);
+        icoDejarDeUsar.SetActive(true);
+
     }
 
 
@@ -120,6 +126,10 @@ public class ComputerController : MonoBehaviour
         tiempoPcEncendido = 0;
 
         DesactivarSonidos();
+
+
+        icoLevantarse.SetActive(true);
+        icoDejarDeUsar.SetActive(false);
 
     }
 

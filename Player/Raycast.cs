@@ -44,6 +44,7 @@ public class Raycast : MonoBehaviour
     [HideInInspector]public GameObject camara;
 
     public bool hasObject;
+    public bool itemGuardado;
     [HideInInspector] public bool eating;
     [HideInInspector] public bool drinking;
     public bool usingComputer;
@@ -94,6 +95,20 @@ public class Raycast : MonoBehaviour
 
     public CorregirPickUp corregirPickUp;
 
+
+    public GameObject icoLanzarItem;
+    public GameObject icoComer;
+    public GameObject icoBeber;
+    public GameObject icoUsar;
+    public GameObject icoAbrir;
+    public GameObject icoLeer;
+    public GameObject icoDejarDeLeer;
+    public GameObject icoRotar;
+    public GameObject icoGuardarItem;
+    public GameObject icoSacarItem;
+    public GameObject icoFumar;
+    public GameObject icoTomarPastillas;
+
     #endregion
 
     private void Awake()
@@ -130,7 +145,7 @@ public class Raycast : MonoBehaviour
         if (hasObject) 
         {
             if (!itemAtributes.comiendoTrozoPizza && !itemAtributes.abriendoPuerta) SoltarObjeto();        
-            if (itemAtributes.isMovil) UsarMovilController();
+            //if (itemAtributes.isMovil) UsarMovilController();
             if (!drinking && !eating) tiempoSinUsarItem += Time.deltaTime;
             if (itemAtributes.isFood || itemAtributes.isPizza) EatController();
             if (itemAtributes.isWater) DrinkController();
@@ -353,18 +368,51 @@ public class Raycast : MonoBehaviour
             }
         }
 
-        /*
-        if (usingMovil)
+        if(hasObject)
         {
-            if (Input.GetKeyDown(KeyCode.C))
+            if(Input.GetKeyDown(KeyCode.G))
             {
-                usingMovil = false;
-                movilController.ApagarPantalla();
-                puntero.enabled = true;
-                player.GetComponent<CamaraFP>().freeze = false;
+                if(itemGuardado)
+                {
+                    SacarItem();
+                }
+                else
+                {
+                    GuardarItem();
+                }
             }
         }
-        */
+        
+    }
+
+    public void GuardarItem()
+    {
+        itemGuardado = true;
+
+        OcultarIconos();
+
+        icoGuardarItem.SetActive(false);
+        icoSacarItem.SetActive(true);
+
+        if (itemAtributes.mostrandoTexto) { itemAtributes.DejarDeMostrarTexto(); }
+    }
+
+    public void SacarItem()
+    {
+        itemGuardado = false;
+        icoGuardarItem.SetActive(true);
+        icoSacarItem.SetActive(false);
+
+        if (usingMovil)
+        {
+            movilController.DejarDeUsarMovil();
+        }
+        if (sacarMovilController.movilSacado)
+        {
+            sacarMovilController.GuardarMovil();
+        }
+
+        MostrarIconos();
     }
 
     #region UsosItems
@@ -444,6 +492,7 @@ public class Raycast : MonoBehaviour
                 pressDrink = false;
                 drinking = false;
                 drinkAnimation.SetBool("Drinking", false);
+                icoBeber.SetActive(false);
             }
 
             itemAtributes.scriptLiquido.cantidadDeAgua -= Time.deltaTime * itemAtributes.scriptLiquido.WobbleSpeed;
@@ -477,7 +526,7 @@ public class Raycast : MonoBehaviour
 
                 //tiempoConObjeto += Time.deltaTime;
 
-                if (Input.GetKeyDown(KeyCode.Mouse0) && tiempoConObjeto > 0.2f && tiempoSinUsarItem > 0.15f)
+                if (Input.GetKeyDown(KeyCode.Mouse0) && tiempoConObjeto > 0.2f && tiempoSinUsarItem > 0.15f && !itemGuardado)
                 {
                     if (playerStats.hambre < 90)
                     {
@@ -486,6 +535,8 @@ public class Raycast : MonoBehaviour
                         tiempoSinUsarItem = 0;
                         eatAnimation.SetBool("Eating", true);
                         sonidoComer.Play();
+                        icoComer.SetActive(false);
+                        icoGuardarItem.SetActive(false);
                     }
                     else
                     {
@@ -539,12 +590,18 @@ public class Raycast : MonoBehaviour
         }
         else
         {
-            if (Input.GetKeyDown(KeyCode.Mouse0) && tiempoConObjeto > 0.2f && !seleccionando)
+            if (Input.GetKeyDown(KeyCode.Mouse0) && tiempoConObjeto > 0.2f && !seleccionando && !itemGuardado)
             {
                 if (playerStats.hambre < 90)
                 {
                     itemAtributes.ComerTrozoPizza();
                     sonidoComer.Play();
+
+                    if(itemAtributes.indiceTrozosPizza >= 7)
+                    {
+                        icoComer.SetActive(false);
+                    }
+
                 }
                 else
                 {
@@ -553,15 +610,21 @@ public class Raycast : MonoBehaviour
             }
         }
     }
-    public void UsarMovilController()
+    public void UsarMovilController() //OBSOLETO
     {
         if ((Input.GetKeyDown(KeyCode.Mouse0) && tiempoConObjeto > 0.2f))
         {
             if (!usingMovil && !seleccionando)
             {
                 //player.GetComponent<CamaraFP>().freezeCamera = true;
+                print("usarMovil");
                 player.GetComponent<CamaraFP>().freeze = true;
                 movilController.AbrirMovil();
+
+                movilController.sacarMovilController.icoDejarDeUsarMovil.SetActive(true);
+                movilController.sacarMovilController.icoUsarMovil.SetActive(false);
+                movilController.sacarMovilController.icoGuardarMovil.SetActive(false);
+
                 movilController.EncenderPantalla();
                 movilController.encendido = true;
                 puntero.enabled = false;
@@ -577,7 +640,7 @@ public class Raycast : MonoBehaviour
     public void ControlarTazaCafe()
     {
         
-        if ((Input.GetKeyDown(KeyCode.Mouse0) && tiempoConObjeto > 0.2f) && !seleccionando && !bebiendoCafe)
+        if ((Input.GetKeyDown(KeyCode.Mouse0) && tiempoConObjeto > 0.2f) && !seleccionando && !bebiendoCafe && !itemGuardado)
         {
             if (itemAtributes.cafeController.cantidadCafe > 0)
             {
@@ -587,13 +650,14 @@ public class Raycast : MonoBehaviour
                 print("bebiendo");
             }
         }
-        if ((Input.GetKey(KeyCode.Mouse0) && tiempoConObjeto > 0.2f) && !seleccionando)
+        if ((Input.GetKey(KeyCode.Mouse0) && tiempoConObjeto > 0.2f) && !seleccionando && !itemGuardado)
         {
             tiempoBebiendoTaza += Time.deltaTime;
 
             if (itemAtributes.cafeController.cantidadCafe <= 0)
             {
                 TerminarDeBeber();
+                icoBeber.SetActive(false);
             }
         }
         if ((Input.GetKeyUp(KeyCode.Mouse0) && tiempoConObjeto > 0.2f) && !seleccionando)
@@ -623,7 +687,7 @@ public class Raycast : MonoBehaviour
 
     public void MandoController()
     {
-        if ((Input.GetKeyDown(KeyCode.Mouse0) && tiempoConObjeto > 0.2f) && !seleccionando)
+        if ((Input.GetKeyDown(KeyCode.Mouse0) && tiempoConObjeto > 0.2f) && !seleccionando && !itemGuardado)
         {
             itemAtributes.PulsarMando();
             GameObject.Find("TriggerTVPrincipal").GetComponent<ControlTV>().InteractuarTV();
@@ -1415,7 +1479,7 @@ public class Raycast : MonoBehaviour
     bool pressLefrClick;
     public void SoltarObjeto() 
     {
-        if (!usingMovil && tiempoConObjeto > 0.1f)
+        if (!usingMovil && tiempoConObjeto > 0.1f && !itemGuardado)
         {
             if (Input.GetKeyDown(KeyCode.Mouse1) && hasObject == true)
             {
@@ -1525,6 +1589,10 @@ public class Raycast : MonoBehaviour
 
                 if (!corregirPickUp.algoDentro) { CorregirUbicacion(pickUpObject); }
 
+                itemGuardado = false;
+
+                OcultarIconos();
+
             }
         }
 
@@ -1614,6 +1682,10 @@ public class Raycast : MonoBehaviour
 
         }
 
+        itemGuardado = false;
+
+        OcultarIconos();
+
     }
 
     public LayerMask capasCorregirUbicacion;
@@ -1650,6 +1722,8 @@ public class Raycast : MonoBehaviour
     public void CogerObjeto(GameObject cual)
     {
         itemAtributes = cual.GetComponent<ItemAtributes>();
+
+        itemGuardado = false;
 
         itemAtributes.pickUp = true;
 
@@ -1750,7 +1824,97 @@ public class Raycast : MonoBehaviour
         notaPosition.transform.rotation = pickUpObject.transform.rotation;
         itemAtributes.inCajon = false;
         itemAtributes.PickUp();
+
+        if(itemAtributes.pensamientoAlCojer != "" && !pensamientoControler.mostrandoPensamiento)
+        {
+            pensamientoControler.MostrarPensamiento(itemAtributes.pensamientoAlCojer, 2);
+        }
+
+        //ICONOS TUTORIAL
+
+        MostrarIconos();
+
     }
+
+    #region ControlIconos
+
+    public void OcultarIconos()
+    {
+        icoLanzarItem.SetActive(false);
+        icoComer.SetActive(false);
+        icoBeber.SetActive(false);
+        icoUsar.SetActive(false);
+        icoAbrir.SetActive(false);
+        icoLeer.SetActive(false);
+        icoDejarDeLeer.SetActive(false);
+        icoRotar.SetActive(false);
+        icoSacarItem.SetActive(false);
+        icoGuardarItem.SetActive(false);
+        icoFumar.SetActive(false);
+        icoTomarPastillas.SetActive(false);
+    }
+
+    public void MostrarIconos()
+    {
+        icoLanzarItem.SetActive(true);
+        if (itemAtributes.isFood)
+        {
+            if (itemAtributes.isPizza)
+            {
+                if (itemAtributes.indiceTrozosPizza < 7)
+                {
+                    icoComer.SetActive(true);
+                }
+            }
+            else
+            {
+                icoComer.SetActive(true);
+            }
+        }
+        else if (itemAtributes.isWater)
+        {
+            if (itemAtributes.scriptLiquido.usos > 0)
+            {
+                icoBeber.SetActive(true);
+            }
+        }
+        else if (itemAtributes.isTaza)
+        {
+            if (itemAtributes.cafeController.cantidadCafe > 0)
+            {
+                icoBeber.SetActive(true);
+            }
+        }
+        else if (itemAtributes.isVela || itemAtributes.isFregona || itemAtributes.isLinterna || itemAtributes.isMando)
+        {
+            icoUsar.SetActive(true);
+        }
+        else if (itemAtributes.isCarta && !itemAtributes.cartaAbierta)
+        {
+            icoAbrir.SetActive(true);
+        }
+        else if (itemAtributes.isNota)
+        {
+            icoRotar.SetActive(true);
+        }
+        else if (itemAtributes.isCigar)
+        {
+            if(!itemAtributes.cigarroConsumido)
+            {
+                icoFumar.SetActive(true);
+            }
+        }
+        else if(itemAtributes.isPildoras)
+        {
+            if(itemAtributes.indicePastillas < itemAtributes.cantidadPastillas.Length)
+            {
+                icoTomarPastillas.SetActive(true);
+            }
+        }
+        icoGuardarItem.SetActive(true);
+    }
+
+    #endregion
 
 
 }

@@ -22,6 +22,7 @@ public class SegmentController : MonoBehaviour
     private GameObject rightSegment;
 
     public GameObject laberintoParent;
+    public LaberintoController laberintoController;
 
     public GameObject culoRight;
     public GameObject culoLeft;
@@ -29,10 +30,18 @@ public class SegmentController : MonoBehaviour
     public Light luzRight;
     public Light luzLeft;
 
+    public GameObject guardianLaberinto;
+    public GameObject spawnGuardianLaberinto;
+
+    public bool caminoErroneo;
+    bool lucesRojas;
+    public Light[] luces;
+
     void Start()
     {
 
         laberintoParent = GameObject.Find("LaberintoParent");
+        laberintoController = laberintoParent.GetComponent<LaberintoController>();
         transform.SetParent(laberintoParent.transform);
 
         // Si es el primer segmento, instancia los caminos iniciales
@@ -61,6 +70,14 @@ public class SegmentController : MonoBehaviour
         triggerRight.OnPlayerEnter += () => ChoosePath(false);
     }
 
+    private void Update()
+    {
+        if(laberintoController.caminoErroneo && !lucesRojas)
+        {
+            CambiarColorLuces();
+        }
+    }
+
     void ChoosePath(bool leftChosen)
     {
         if (hasChosen) return;
@@ -68,6 +85,20 @@ public class SegmentController : MonoBehaviour
 
         if (leftChosen)
         {
+
+            if (laberintoController.caminoCorrecto[laberintoController.indiceCamino] == "Left")
+            {
+                print("CaminoCorrecto");
+            }
+            else
+            {
+                print("CaminoErroneo");
+                caminoErroneo = true;
+                laberintoController.EnfadarGuardianes();
+                laberintoController.caminoErroneo = true;
+                CambiarColorLuces();
+            }
+
             // Instanciar los siguientes caminos del camino izquierdo
             var next = leftSegment.GetComponent<SegmentController>();
             next.SpawnNextSegments();
@@ -76,9 +107,24 @@ public class SegmentController : MonoBehaviour
             Destroy(rightSegment);
             culoRight.SetActive(true);
             luzRight.color = Color.red;
+
         }
         else
         {
+
+            if (laberintoController.caminoCorrecto[laberintoController.indiceCamino] == "Right")
+            {
+                print("CaminoCorrecto");
+            }
+            else
+            {
+                print("CaminoErroneo");
+                caminoErroneo = true;
+                laberintoController.EnfadarGuardianes();
+                laberintoController.caminoErroneo = true;
+                CambiarColorLuces();
+            }
+
             var next = rightSegment.GetComponent<SegmentController>();
             next.SpawnNextSegments();
 
@@ -86,6 +132,13 @@ public class SegmentController : MonoBehaviour
             culoLeft.SetActive(true);
             luzLeft.color = Color.red;
         }
+
+        if (laberintoController.caminoCorrecto.Length > laberintoController.indiceCamino)
+        {
+            laberintoController.indiceCamino++;
+        }
+
+        Instantiate(guardianLaberinto, spawnGuardianLaberinto.transform.position, Quaternion.identity);
     }
 
     // Método que instancia los dos próximos caminos
@@ -106,5 +159,15 @@ public class SegmentController : MonoBehaviour
 
         leftSegment.GetComponent<SegmentController>().isInstantiatedManually = true;
         rightSegment.GetComponent<SegmentController>().isInstantiatedManually = true;
+
+    }
+
+    public void CambiarColorLuces()
+    {
+        for (int i = 0; i < luces.Length; i++) 
+        {
+            luces[i].color = Color.red;
+        }
+        lucesRojas = true;
     }
 }

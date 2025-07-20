@@ -23,6 +23,11 @@ public class SofaController : MonoBehaviour
     public Vector3 offsetPis;
     Vector3 pisPositionPosicionInicial;
 
+    public GameObject icoLevantarse;
+
+    public GameObject panelDialogos;
+    public GameObject panelLlamadas;
+
     void Start()
     {
         ray = GameObject.Find("Main Camera").GetComponent<Raycast>();
@@ -45,6 +50,11 @@ public class SofaController : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.C))
                 {
+
+
+                    if (panelDialogos != null) { if (panelDialogos.activeSelf) { return; } }
+                    if (panelLlamadas != null) { if (panelLlamadas.activeSelf) { return; } }
+
                     LevantarseSofa();
                 }
             }
@@ -52,6 +62,10 @@ public class SofaController : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.C))
                 {
+
+                    if(panelDialogos != null) { if (panelDialogos.activeSelf) { return; } }
+                    if(panelLlamadas != null) { if (panelLlamadas.activeSelf) { return; } }
+
                     LevantarseSofa();
                 }
             }
@@ -84,6 +98,8 @@ public class SofaController : MonoBehaviour
 
         pisPositionPosicionInicial = pisPosition.transform.localPosition;
 
+        if(icoLevantarse != null)icoLevantarse.SetActive(true);
+
     }
 
     public void LevantarseSofa()
@@ -97,6 +113,8 @@ public class SofaController : MonoBehaviour
         recienLevantado = true;
 
         pisPosition.transform.localPosition = pisPositionPosicionInicial;
+
+        if (icoLevantarse != null)icoLevantarse.SetActive(false);
 
     }
 }

@@ -48,6 +48,8 @@ public class LlamadasController : MonoBehaviour
     public bool tienePensamiento;
     public string pensamiento;
 
+    public GameObject iconosTutorial;
+
     #endregion
 
     void Start()
@@ -161,6 +163,8 @@ public class LlamadasController : MonoBehaviour
         Cursor.visible = true;
 
         llamadaActiva = true;
+
+        iconosTutorial.SetActive(false);
 
     }
 
@@ -365,6 +369,8 @@ public class LlamadasController : MonoBehaviour
             pensamientoControler.MostrarPensamiento(pensamiento, 2);
             tienePensamiento = false;
         }
+
+        iconosTutorial.SetActive(true);
     }
 
 

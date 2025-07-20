@@ -52,6 +52,8 @@ public class CamaController : MonoBehaviour
     [HideInInspector] public bool alguienEnLaCasa;
     BrazoController brazoConReloj;
 
+    public GameObject icoLevantarse;
+
     private void Awake()
     {
         usandoCama = true;
@@ -176,6 +178,7 @@ public class CamaController : MonoBehaviour
                             if (playerStats.cansancio > 70)  //DORMIRSE
                             {
                                 EmpezarDormirse();
+                                icoLevantarse.SetActive(false);
                                 sacarMovilController.enabled = false;
                             }
                             else
@@ -319,6 +322,9 @@ public class CamaController : MonoBehaviour
 
     public void Tumbarse()
     {
+
+        icoLevantarse.SetActive(true);
+
         tiempoUsandoCama = 0;
         camaraFP.freeze = true;
         raycast.tumbado = true;
@@ -346,6 +352,9 @@ public class CamaController : MonoBehaviour
 
     public void Levantarse()
     {
+
+        icoLevantarse.SetActive(false);
+
         if (!raycast.usingMovil) { camaraFP.freeze = false; }
         raycast.tumbado = false;
         player.transform.position = levantarseCamaPoint.transform.position;

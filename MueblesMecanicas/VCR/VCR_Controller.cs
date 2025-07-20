@@ -28,9 +28,12 @@ public class VCR_Controller : MonoBehaviour
 
     ElectricidadController electricidadController;
 
+    PensamientoControler pensamientoControler;
+
     void Start()
     {
         guardarController = GameObject.Find("GameManager").GetComponent<GuardarController>();
+        pensamientoControler = GameObject.Find("PensamientoController").GetComponent<PensamientoControler>();
 
         electricidadController = GameObject.Find("ElectricidadControler").GetComponent<ElectricidadController>();
         if (PlayerPrefs.GetInt("VHS_Dentro", System.Convert.ToInt32(VHSDentro)) == 0) { VHSDentro = false; }
@@ -106,7 +109,7 @@ public class VCR_Controller : MonoBehaviour
         controlTV.ReproducirVHS();
     }
 
-    public void ApuntandoTapa()
+    public void ApuntandoTapa() //DESDE EL RAYCAST CUANDO APUNTAS 
     {
         if (VHSDentro)
         {
@@ -114,6 +117,12 @@ public class VCR_Controller : MonoBehaviour
             tapaAbierta = true;
             AbrirTapa();
         }
+
+        if(Input.GetKeyDown(KeyCode.Mouse0) && !pensamientoControler.mostrandoPensamiento)
+        {
+            pensamientoControler.MostrarPensamiento("Podria meter un VHS aquí", 1);
+        }
+
     }
     public void AbrirTapa()
     {

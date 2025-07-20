@@ -21,6 +21,8 @@ public class ChairController : MonoBehaviour
     public Vector3 offsetPis;
     Vector3 pisPositionPosicionInicial;
 
+    public GameObject icoLevantarse;
+
     void Start()
     {
         player = GameObject.Find("Player");
@@ -87,6 +89,9 @@ public class ChairController : MonoBehaviour
             sentadoEnSilla = true;
 
             pisPositionPosicionInicial = pisPosition.transform.localPosition;
+
+            icoLevantarse.SetActive(true);
+
         }
 
         if(generaPensamiento && !pensamientoControler.mostrandoPensamiento)
@@ -106,6 +111,9 @@ public class ChairController : MonoBehaviour
         sentadoEnSilla = false;
 
         pisPosition.transform.localPosition = pisPositionPosicionInicial;
+
+        icoLevantarse.SetActive(false);
+
     }
     public void ActivarColisiones()
     {

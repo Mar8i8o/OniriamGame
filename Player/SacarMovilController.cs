@@ -10,6 +10,7 @@ public class SacarMovilController : MonoBehaviour
     public GameObject usingMovilPosition;
     public GameObject spawnMovilPosition;
     public MovilController movilController;
+    LlamadasController llamadasController;
 
     public GameObject player;
     public GameObject mainCamera;
@@ -21,14 +22,24 @@ public class SacarMovilController : MonoBehaviour
     public bool movilSacado;
     public bool guardandoMovil;
 
+    public GameObject icoGuardarMovil;
+    public GameObject icoUsarMovil;
+    public GameObject icoDejarDeUsarMovil;
+    public GameObject icoLinterna;
+
     void Start()
     {
+        llamadasController = GameObject.Find("GameManager").GetComponent<LlamadasController>();
         movil.gameObject.transform.SetParent(mainCamera.transform, true);
         movil.gameObject.transform.position = spawnMovilPosition.transform.position;
         movilMesh.SetActive(false);
 
 
         movilController.camaraMovil.SetActive(false);
+
+        icoGuardarMovil.SetActive(false);
+        icoUsarMovil.SetActive(false);
+        icoDejarDeUsarMovil.SetActive(false);
     }
 
     void Update()
@@ -38,7 +49,7 @@ public class SacarMovilController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.M) || Input.GetKeyDown(KeyCode.Mouse1))
             {
-                if (!guardandoMovil)
+                if (!guardandoMovil && !llamadasController.esperandoLlamada)
                 {
                     if (!raycast.usingMovil)
                     {
@@ -46,6 +57,12 @@ public class SacarMovilController : MonoBehaviour
                     }
                 }
             }
+
+            if(Input.GetKeyDown(KeyCode.L))
+            {
+                movilController.EncenderLinterna();
+            }
+
         }
         else
         {
@@ -102,7 +119,12 @@ public class SacarMovilController : MonoBehaviour
         tiempoConObjeto = 0;
 
         raycast.canPickUp = false;
-        if (raycast.hasObject) { raycast.ForzarSoltarObjeto(); }
+        if (raycast.hasObject) { raycast.GuardarItem(); }
+
+        icoGuardarMovil.SetActive(true);
+        icoUsarMovil.SetActive(true);
+        icoDejarDeUsarMovil.SetActive(false);
+        icoLinterna.SetActive(true);
 
     }
 
@@ -121,6 +143,11 @@ public class SacarMovilController : MonoBehaviour
 
         //player.GetComponent<CamaraFP>().freeze = false;
         raycast.puntero.enabled = true;
+
+        icoGuardarMovil.SetActive(false);
+        icoUsarMovil.SetActive(false);
+        icoDejarDeUsarMovil.SetActive(false);
+        icoLinterna.SetActive(false);
 
     }
 
@@ -151,6 +178,9 @@ public class SacarMovilController : MonoBehaviour
                 movilController.encendido = true;
                 raycast.puntero.enabled = false;
                 raycast.usingMovil = true;
+                icoDejarDeUsarMovil.SetActive(true);
+                icoUsarMovil.SetActive(false);
+                icoGuardarMovil.SetActive(false);
             }
         }
     }

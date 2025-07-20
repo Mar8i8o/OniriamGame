@@ -31,6 +31,8 @@ public class MirillaController : MonoBehaviour
     public GameObject posicionMirarMirilla;
     public Animator cameraAnim;
 
+    public GameObject icoSalir;
+
     private void Awake()
     {
         player = GameObject.Find("Player");
@@ -131,6 +133,8 @@ public class MirillaController : MonoBehaviour
 
         Invoke(nameof(ApagarAnim), 3);
 
+        icoSalir.SetActive(true);
+
     }
 
     public void CerarMirilla()
@@ -148,6 +152,8 @@ public class MirillaController : MonoBehaviour
         usandoMirilla = false;
 
         cameraAnim.enabled = true;
+
+        icoSalir.SetActive(false);
 
     }
 
